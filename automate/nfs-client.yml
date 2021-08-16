@@ -1,0 +1,22 @@
+---
+- name: config nfs clients
+  hosts: nfsclient
+  tasks:
+    - name: Ensure autofs is installed
+      apt:
+        name:  autofs
+        state: latest
+        update_cache: yes
+    - name: create autofs master
+      copy:
+        dest: "/etc/auto.master.d/bits.autofs"
+        content: "/mymnt  /etc/auto.bits"
+    - name: create autos second
+      copy:
+        dest: "/etc/auto.bits"
+        content: "nfs -rw,sync  192.168.198.133:/myshare"
+    - name: Ensure nfs is restarted and enabled
+      service:
+        name: autofs
+        state: restarted
+        enabled: true

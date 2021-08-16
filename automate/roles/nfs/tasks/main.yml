@@ -1,0 +1,35 @@
+---
+# tasks file for roles/nfs
+- name: Ensure nfs is installed
+  apt:
+    name: 
+      - nfs-kernel-server
+      - nfs-common
+    state: latest
+    update_cache: yes
+- name: Ensure nfs is started and enabled
+  service:
+    name: nfs-kernel-server
+    state: started
+    enabled: true
+- name: Create shared directory
+  file:
+    path: /myshare
+    state: directory
+    mode: '0755'
+- name: create blank file
+  copy:
+    dest: "/myshare/test.txt"
+    content: |
+      This is test content
+
+- name: config file is installed
+  template:
+    src: export.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+   - restart nfs
+

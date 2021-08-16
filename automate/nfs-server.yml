@@ -1,0 +1,11 @@
+---
+- name: mount nfs server 
+  hosts: nfsserver
+  roles:
+    - nfs
+  post_tasks:
+    - name: Non-idempotent approach with shell module
+      shell: "ls -l /mnt/"
+    - name: post_tasks message
+      debug:
+        msg: 'nfs is configured.'
